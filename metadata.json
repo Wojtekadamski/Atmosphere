@@ -1,0 +1,6 @@
+{
+  "name": "Atmosphere - Weather Aggregator",
+  "description": "Aggregates weather forecasts from multiple global weather models with hourly temperature and rainfall graphs, provider comparisons, city search autocomplete, and saved favorite locations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
