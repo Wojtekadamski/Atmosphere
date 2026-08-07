@@ -4,7 +4,6 @@ import { FavoritesBar } from './components/FavoritesBar';
 import { WeatherHeaderCard } from './components/WeatherHeaderCard';
 import { HourlyWeatherGraph } from './components/HourlyWeatherGraph';
 import { ProviderComparisonCards } from './components/ProviderComparisonCards';
-import { AiInsightsCard } from './components/AiInsightsCard';
 import { DailyForecastCard } from './components/DailyForecastCard';
 import { Location, WeatherAggregatedData, TempUnit, WindUnit, Language } from './types';
 import { DEFAULT_FAVORITES } from './constants/providers';
@@ -111,34 +110,6 @@ export default function App() {
       }
 
       const data: WeatherAggregatedData = await response.json();
-
-      // Fetch AI consensus summary in parallel
-      try {
-        const aiRes = await fetch('/api/ai-summary', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            locationName: loc.name,
-            current: data.current,
-            hourly: data.hourly?.slice(0, 24).map((h) => ({
-              hour: h.hour,
-              time: h.time,
-              averageTemp: h.averageTemp,
-              averageRainProb: h.averageRainProb,
-              averageWindSpeed: h.averageWindSpeed,
-            })),
-            daily: data.daily?.slice(0, 7),
-            lang: activeLang,
-          }),
-        });
-        if (aiRes.ok) {
-          const aiData = await aiRes.json();
-          data.aiSummary = aiData;
-        }
-      } catch (aiErr) {
-        console.warn('AI summary fetch skipped or failed:', aiErr);
-      }
-
       setWeatherData(data);
     } catch (err: any) {
       console.error('Error fetching weather:', err);
@@ -238,16 +209,6 @@ export default function App() {
               windUnit={windUnit}
               lang={lang}
             />
-
-            {/* 3. AI Consensus & Weather Intelligence Card */}
-            {weatherData.aiSummary && (
-              <AiInsightsCard
-                locationName={weatherData.location.name}
-                aiSummary={weatherData.aiSummary}
-                loading={loading}
-                lang={lang}
-              />
-            )}
 
             {/* 4. Side-by-Side Service Provider Comparison Cards */}
             <ProviderComparisonCards

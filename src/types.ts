@@ -81,12 +81,6 @@ export interface WeatherAggregatedData {
   current: CurrentConditions;
   hourly: HourlyPoint[];
   daily: DailyPoint[];
-  aiSummary?: {
-    summary: string;
-    consensusRating: 'High' | 'Moderate' | 'Low Divergence';
-    keyInsights: string[];
-    clothingAdvice: string;
-  };
 }
 
 export type TempUnit = 'C' | 'F';

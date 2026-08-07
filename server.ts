@@ -1,7 +1,6 @@
 import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
-import { GoogleGenAI } from '@google/genai';
 
 const app = express();
 const PORT = 3000;
@@ -491,82 +490,6 @@ app.get('/api/weather', async (req, res) => {
 });
 
 // Optional AI Insights endpoint
-app.post('/api/ai-summary', async (req, res) => {
-  try {
-    const { locationName, current, hourly, daily, lang } = req.body;
-    const isPl = lang === 'pl';
-    
-    // Check if GEMINI_API_KEY is available
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey || apiKey === 'MY_GEMINI_API_KEY') {
-      if (isPl) {
-        return res.json({
-          summary: `Konsensus prognozy dla ${locationName}: Wszystkie 5 globalnych modeli pogodowych (ECMWF, GFS, ICON, MET Norway, Météo-France) wykazują ${current?.spreadDeg <= 1 ? 'wysoką zgodność modeli' : 'umiarkowane rozbieżności'} wynoszące ${current?.spreadDeg || 0.8}°C. Średnia temperatura wynosi ${current?.temp || 18}°C.`,
-          consensusRating: current?.spreadDeg <= 0.8 ? 'Wysoka' : current?.spreadDeg <= 1.8 ? 'Umiarkowana' : 'Niska rozbieżność',
-          keyInsights: [
-            `ECMWF i GFS ściśle zgadzają się co do trendów temperatury w ciągu najbliższych 24 godzin.`,
-            `Maksymalne prawdopodobieństwo opadów sięga ${Math.max(...(hourly || []).slice(0, 24).map((h: any) => h.averageRainProb))}% w nadchodzącym okresie.`,
-            `Aktualna ocena zgodności modeli wynosi ${current?.modelAgreementScore || 88}%.`
-          ],
-          clothingAdvice: current?.temp > 22 ? 'Lekki strój letni i okulary przeciwsłoneczne.' : current?.temp > 14 ? 'Wygodne warstwy, zalecana lekka kurtka.' : 'Zalecana ciepła kurtka i parasol.'
-        });
-      }
-
-      return res.json({
-        summary: `Forecast consensus for ${locationName}: All 5 global weather models (ECMWF, GFS, ICON, MET Norway, Météo-France) show a ${current?.spreadDeg <= 1 ? 'high model agreement' : 'moderate spread'} of ${current?.spreadDeg || 0.8}°C. Temperatures are averaging ${current?.temp || 18}°C.`,
-        consensusRating: current?.spreadDeg <= 0.8 ? 'High' : current?.spreadDeg <= 1.8 ? 'Moderate' : 'Low Divergence',
-        keyInsights: [
-          `ECMWF & GFS align closely on temperature trends over the next 24 hours.`,
-          `Peak rain probability reaches ${Math.max(...(hourly || []).slice(0, 24).map((h: any) => h.averageRainProb))}% in the upcoming period.`,
-          `Current model agreement score is ${current?.modelAgreementScore || 88}%.`
-        ],
-        clothingAdvice: current?.temp > 22 ? 'Light summer apparel with sunglasses.' : current?.temp > 14 ? 'Comfortable layers, light jacket recommended.' : 'Warm jacket and umbrella recommended.'
-      });
-    }
-
-    const ai = new GoogleGenAI({ apiKey });
-    const prompt = `You are an expert meteorological aggregator analyst.
-Analyze this weather data for ${locationName}:
-Current Avg Temp: ${current?.temp}°C
-Model Spread: ${current?.spreadDeg}°C across 5 models (ECMWF, GFS, ICON, MET Norway, Météo-France)
-Model Agreement Score: ${current?.modelAgreementScore}%
-Rain Probability: ${current?.rainProb}%
-24h Hourly Trend: ${JSON.stringify(hourly?.slice(0, 6).map((h: any) => ({ hour: h.hour, avgTemp: h.averageTemp, rainProb: h.averageRainProb })))}
-
-IMPORTANT: Respond in ${isPl ? 'Polish language (język polski)' : 'English language'}.
-
-Provide a concise json response with keys:
-- summary: string (2 short sentences overview of consensus and divergence)
-- consensusRating: string ("High" / "Moderate" / "Low Divergence" or Polish equivalents "Wysoka" / "Umiarkowana" / "Niska")
-- keyInsights: array of 3 bullet points highlighting model variations or precipitation timing
-- clothingAdvice: string (1 practical sentence)`;
-
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-      },
-    });
-
-    const responseText = response.text || '';
-    const parsed = JSON.parse(responseText);
-    res.json(parsed);
-  } catch (error) {
-    console.error('AI summary error:', error);
-    res.json({
-      summary: `Weather models show consistent predictions for the area with low variance across major global services.`,
-      consensusRating: 'High',
-      keyInsights: [
-        'High model agreement across ECMWF and GFS.',
-        'Rain probabilities are low for the morning period.',
-        'Wind speeds remain moderate.'
-      ],
-      clothingAdvice: 'Wear comfortable layers suitable for changing conditions.'
-    });
-  }
-});
-
 function getWeatherDescription(code: number): string {
   if (code === 0) return 'Clear Sky';
   if (code === 1) return 'Mainly Clear';
