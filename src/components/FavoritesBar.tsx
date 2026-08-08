@@ -28,7 +28,8 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({
       <div className="flex items-center gap-2 min-w-max">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1">
           <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-            <span>{t.favoritesLabel ?? t.favorites}:</span>
+          <span>{t.favoritesLabel ?? t.favorites}:</span>
+        </div>
         {favorites.map((fav) => {
           const isSelected = currentLocation?.id === fav.id || (
             currentLocation?.latitude.toFixed(2) === fav.latitude.toFixed(2) &&
