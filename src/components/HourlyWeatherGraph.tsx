@@ -209,9 +209,9 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
         </div>
 
         {/* Graph View Selector & Time Range Selector */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-col sm:flex-row gap-2">
           {/* Time Window Buttons */}
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none bg-slate-100 dark:bg-slate-800 p-1 rounded-xl min-w-0">
             {([24, 48, 168] as TimeRange[]).map((range) => (
               <button
                 key={range}
@@ -228,7 +228,7 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
           </div>
 
           {/* View Mode Switcher */}
-          <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none bg-slate-100 dark:bg-slate-800 p-1 rounded-xl min-w-0">
             <button
               onClick={() => setViewMode('combined')}
               className={`px-3 py-1.5 text-xs font-semibold rounded-lg transition-all cursor-pointer ${
@@ -313,8 +313,9 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
       )}
 
       {/* Chart Canvas Container */}
-      <div className="w-full h-[360px] sm:h-[400px] pt-2">
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="w-full pt-2 overflow-x-auto scrollbar-none">
+        <div className="min-w-[900px] h-[360px] sm:h-[400px]">
+          <ResponsiveContainer width="100%" height="100%">
           {viewMode === 'combined' ? (
             <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
@@ -533,6 +534,7 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
           )}
         </ResponsiveContainer>
       </div>
+    </div>
 
       <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-2xl border border-slate-100 dark:border-slate-800">
         <Info className="w-4 h-4 text-blue-500 shrink-0" />
