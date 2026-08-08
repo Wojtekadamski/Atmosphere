@@ -210,7 +210,7 @@ export const CitySearch: React.FC<CitySearchProps> = ({
             </div>
           ) : query.trim().length >= 2 && !loading ? (
             <div className="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">
-              {t.noCityFound.replace('{query}', query)}
+              {t.noMatchingCity.replace('{query}', query)}
             </div>
           ) : recentSearches.length > 0 && !query ? (
             <div className="p-1.5 space-y-0.5">
