@@ -74,17 +74,29 @@ export default function App() {
             f.longitude.toFixed(2) === loc.longitude.toFixed(2))
       )
     ) {
-      saveFavorites(
-        favorites.filter(
-          (f) =>
-            f.id !== loc.id &&
-            !(
-              f.latitude.toFixed(2) === loc.latitude.toFixed(2) &&
-              f.longitude.toFixed(2) === loc.longitude.toFixed(2)
-            )
-        )
+      // Deleting from favorites
+      const updated = favorites.filter(
+        (f) =>
+          f.id !== loc.id &&
+          !(
+            f.latitude.toFixed(2) === loc.latitude.toFixed(2) &&
+            f.longitude.toFixed(2) === loc.longitude.toFixed(2)
+          )
       );
+      saveFavorites(updated);
+      
+      // If we deleted the current location, switch to another favorite
+      if (
+        currentLocation.id === loc.id ||
+        (currentLocation.latitude.toFixed(2) === loc.latitude.toFixed(2) &&
+          currentLocation.longitude.toFixed(2) === loc.longitude.toFixed(2))
+      ) {
+        if (updated.length > 0) {
+          setCurrentLocation(updated[0]);
+        }
+      }
     } else {
+      // Adding to favorites
       saveFavorites([...favorites, loc]);
     }
   };
