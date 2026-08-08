@@ -28,9 +28,7 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({
       <div className="flex items-center gap-2 min-w-max">
         <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 mr-1">
           <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
-          <span>{t.favoritesLabel}:</span>
-        </div>
-
+            <span>{t.favoritesLabel ?? t.favorites}:</span>
         {favorites.map((fav) => {
           const isSelected = currentLocation?.id === fav.id || (
             currentLocation?.latitude.toFixed(2) === fav.latitude.toFixed(2) &&
@@ -71,7 +69,7 @@ export const FavoritesBar: React.FC<FavoritesBarProps> = ({
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/60 hover:bg-amber-100 dark:hover:bg-amber-900/50 transition-all cursor-pointer"
           >
             <Plus className="w-3.5 h-3.5" />
-            <span>{t.pinLocation.replace('{name}', currentLocation.name)}</span>
+            <span>{((t.pinLocation || t.pinCity || 'Pin {name}')).replace('{name}', currentLocation.name)}</span>
           </button>
         )}
       </div>
