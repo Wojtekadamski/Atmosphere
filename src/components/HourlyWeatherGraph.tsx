@@ -102,6 +102,11 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
     return formattedItem;
   });
 
+  const formatXAxisTick = (rawTime: string) => {
+    const point = chartData.find((item) => item.rawTime === rawTime);
+    return point ? point.displayTime : rawTime;
+  };
+
   const toggleProvider = (id: ProviderId) => {
     setActiveProviders((prev) => ({ ...prev, [id]: !prev[id] }));
   };
@@ -335,11 +340,12 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.15} />
               <XAxis
-                dataKey="displayTime"
+                dataKey="rawTime"
                 tick={{ fontSize: 11, fill: '#64748b' }}
                 axisLine={false}
                 tickLine={false}
                 interval={timeRange > 48 ? 11 : timeRange === 48 ? 3 : 1}
+                tickFormatter={formatXAxisTick}
               />
               <YAxis
                 yAxisId="left"
@@ -394,11 +400,12 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.15} />
               <XAxis
-                dataKey="displayTime"
+                dataKey="rawTime"
                 tick={{ fontSize: 11, fill: '#64748b' }}
                 axisLine={false}
                 tickLine={false}
                 interval={timeRange > 48 ? 11 : timeRange === 48 ? 3 : 1}
+                tickFormatter={formatXAxisTick}
               />
               <YAxis
                 width={35}
@@ -431,11 +438,12 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
             <ComposedChart data={chartData} margin={{ top: 10, right: 15, left: 0, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.15} />
               <XAxis
-                dataKey="displayTime"
+                dataKey="rawTime"
                 tick={{ fontSize: 11, fill: '#64748b' }}
                 axisLine={false}
                 tickLine={false}
                 interval={timeRange > 48 ? 11 : timeRange === 48 ? 3 : 1}
+                tickFormatter={formatXAxisTick}
               />
               <YAxis
                 width={35}
@@ -478,11 +486,12 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.15} />
               <XAxis
-                dataKey="displayTime"
+                dataKey="rawTime"
                 tick={{ fontSize: 11, fill: '#64748b' }}
                 axisLine={false}
                 tickLine={false}
                 interval={timeRange > 48 ? 11 : timeRange === 48 ? 3 : 1}
+                tickFormatter={formatXAxisTick}
               />
               <YAxis
                 width={40}
@@ -512,11 +521,12 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
               </defs>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.15} />
               <XAxis
-                dataKey="displayTime"
+                dataKey="rawTime"
                 tick={{ fontSize: 11, fill: '#64748b' }}
                 axisLine={false}
                 tickLine={false}
                 interval={timeRange > 48 ? 11 : timeRange === 48 ? 3 : 1}
+                tickFormatter={formatXAxisTick}
               />
               <YAxis
                 width={55}
