@@ -248,6 +248,7 @@ export default function App() {
             {/* 5. 7-Day Multi-Model Daily Forecast */}
             <DailyForecastCard
               daily={weatherData.daily}
+              hourly={weatherData.hourly}
               tempUnit={tempUnit}
               lang={lang}
             />

@@ -87,7 +87,7 @@ export type TempUnit = 'C' | 'F';
 export type WindUnit = 'kmh' | 'mph';
 export type Language = 'en' | 'pl';
 export type GraphViewMode = 'aggregated' | 'all' | 'rain' | 'combined' | 'wind';
-export type TimeRange = 24 | 48 | 168; // hours
+export type TimeRange = 24 | 48 | 72; // hours
 
 export interface WeatherCodeInfo {
   description: string;

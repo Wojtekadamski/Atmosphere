@@ -211,7 +211,7 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
         <div className="flex flex-col sm:flex-row gap-2">
           {/* Time Window Buttons */}
           <div className="flex items-center gap-2 overflow-x-auto scrollbar-none bg-slate-100 dark:bg-slate-800 p-1 rounded-xl min-w-0">
-            {([24, 48, 168] as TimeRange[]).map((range) => (
+            {([24, 48, 72] as TimeRange[]).map((range) => (
               <button
                 key={range}
                 onClick={() => setTimeRange(range)}
@@ -221,7 +221,7 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
                     : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                {range === 24 ? t.range24h : range === 48 ? t.range48h : t.range7d}
+                {range === 24 ? t.range24h : range === 48 ? t.range48h : t.range72h}
               </button>
             ))}
           </div>
