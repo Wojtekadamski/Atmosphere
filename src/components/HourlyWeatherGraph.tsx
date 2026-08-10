@@ -56,8 +56,12 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
     meteofrance: true,
   });
 
-  // Filter dataset by time range
-  const filteredHourly = hourlyData.slice(0, timeRange);
+  // Start the graph from local time minus two hours, aligned to the next hourly boundary
+  const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000;
+  const nextHourBoundary = Math.ceil(twoHoursAgo / (60 * 60 * 1000)) * (60 * 60 * 1000);
+  const startIndex = hourlyData.findIndex((item) => new Date(item.time).getTime() >= nextHourBoundary);
+  const normalizedStartIndex = startIndex === -1 ? 0 : startIndex;
+  const filteredHourly = hourlyData.slice(normalizedStartIndex, normalizedStartIndex + timeRange);
 
   // Transform dataset for Recharts with converted units
   const chartData = filteredHourly.map((item, index) => {
