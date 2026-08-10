@@ -213,16 +213,6 @@ export const DailyForecastCard: React.FC<DailyForecastCardProps> = ({
                             tickFormatter={(val) => `${val}%`}
                             domain={[0, 100]}
                           />
-                          <YAxis
-                            yAxisId="rainAmt"
-                            orientation="right"
-                            tick={{ fill: '#67e8f9', fontSize: 11 }}
-                            axisLine={false}
-                            tickLine={false}
-                            width={40}
-                            tickFormatter={(val) => `${val} mm`}
-                            domain={[0, 'dataMax + 2']}
-                          />
                           <Tooltip
                             wrapperStyle={{ borderRadius: 16, boxShadow: '0 10px 30px rgba(15,23,42,0.15)' }}
                             contentStyle={{ background: '#0f172a', border: 'none', color: 'white', borderRadius: 16, padding: '12px 14px' }}
@@ -249,14 +239,6 @@ export const DailyForecastCard: React.FC<DailyForecastCardProps> = ({
                             fill="#22d3ee"
                             barSize={12}
                             radius={[6, 6, 0, 0]}
-                          />
-                          <Line
-                            yAxisId="rainAmt"
-                            type="monotone"
-                            dataKey="averageRainAmount"
-                            stroke="#22d3ee"
-                            strokeWidth={2}
-                            dot={false}
                           />
                         </ComposedChart>
                       </ResponsiveContainer>
