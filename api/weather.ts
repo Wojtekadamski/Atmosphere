@@ -212,6 +212,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const maxTemp = sortedTemps[sortedTemps.length - 1];
 
       const avgRain = Math.round(rains.reduce((a, b) => a + b, 0) / rains.length);
+      const averageRainAmount = Math.round(rains.reduce((a, b) => a + b, 0) / rains.length / 10 * 10) / 10;
       const maxRain = Math.max(...rains);
       const avgHum = Math.round(humidities.reduce((a, b) => a + b, 0) / humidities.length);
       const avgWindSpeed = Math.round((winds.reduce((a, b) => a + b, 0) / winds.length) * 10) / 10;
@@ -239,6 +240,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         minTemp,
         maxTemp,
         averageRainProb: avgRain,
+        averageRainAmount,
         maxRainProb: maxRain,
         averageWindSpeed: avgWindSpeed,
         averageWindDirection: avgWindDir,

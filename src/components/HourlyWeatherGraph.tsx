@@ -84,24 +84,8 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
         formatTempNumber(item.maxTemp, tempUnit),
       ],
       averageRainProb: item.averageRainProb,
-      maxRainProb: item.maxRainProb,
-      rawWindSpeed: item.averageWindSpeed,
-      windSpeed: formatWindNumber(item.averageWindSpeed, windUnit),
-      windDirection: item.averageWindDirection || 0,
-      windCardinal: getWindCardinal(item.averageWindDirection || 0, activeLang),
-      dataIndex: index,
-      providers: item.providers,
+      averageRainAmount: item.averageRainAmount,
     };
-
-    // Add individual provider values converted
-    Object.keys(item.providers).forEach((pid) => {
-      const pData = item.providers[pid as ProviderId];
-      if (pData) {
-        formattedItem[`temp_${pid}`] = formatTempNumber(pData.temp, tempUnit);
-        formattedItem[`rain_${pid}`] = pData.rainProb;
-        formattedItem[`wind_${pid}`] = formatWindNumber(pData.windSpeed, windUnit);
-      }
-    });
 
     return formattedItem;
   });
@@ -144,6 +128,10 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
             <div className="text-[10px] text-slate-400 font-medium">{t.rainProbLabel}</div>
             <div className="text-sm font-extrabold text-cyan-400">
               {dataPoint.averageRainProb}%
+            </div>
+            <div className="text-[10px] text-slate-400">{t.avgRainAmount}</div>
+            <div className="text-sm font-bold text-cyan-200">
+              {dataPoint.averageRainAmount ?? '--'} mm
             </div>
           </div>
           <div>
