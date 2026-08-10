@@ -60,7 +60,7 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
   const filteredHourly = hourlyData.slice(0, timeRange);
 
   // Transform dataset for Recharts with converted units
-  const chartData = filteredHourly.map((item) => {
+  const chartData = filteredHourly.map((item, index) => {
     const weatherDescription = getWmoWeatherDescription(item.weatherCode, activeLang);
 
     const formattedItem: any = {
@@ -85,6 +85,8 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
       windSpeed: formatWindNumber(item.averageWindSpeed, windUnit),
       windDirection: item.averageWindDirection || 0,
       windCardinal: getWindCardinal(item.averageWindDirection || 0, activeLang),
+      dataIndex: index,
+      providers: item.providers,
     };
 
     // Add individual provider values converted
@@ -110,7 +112,7 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
     const dataPoint = payload[0]?.payload;
     if (!dataPoint) return null;
 
-    const hourData = hourlyData.find((h) => h.time === dataPoint.rawTime);
+    const hourData = dataPoint.providers ? dataPoint : hourlyData.find((h) => h.time === dataPoint.rawTime);
 
     return (
       <div className="bg-slate-900/95 text-white p-4 rounded-2xl shadow-2xl border border-slate-700/80 backdrop-blur-md max-w-sm z-50 text-xs space-y-3">
