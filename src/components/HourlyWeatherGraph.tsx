@@ -314,7 +314,10 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
 
       {/* Chart Canvas Container */}
       <div className="w-full pt-2 overflow-x-auto scrollbar-none">
-        <div className="min-w-[900px] h-[360px] sm:h-[400px]">
+        <div
+          className="h-[360px] sm:h-[400px]"
+          style={{ minWidth: Math.max(900, filteredHourly.length * 24) }}
+        >
           <ResponsiveContainer width="100%" height="100%">
           {viewMode === 'combined' ? (
             <ComposedChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>

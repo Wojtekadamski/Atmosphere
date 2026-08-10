@@ -11,7 +11,14 @@ import { TRANSLATIONS } from './constants/translations';
 import { Loader2, AlertTriangle, Layers } from 'lucide-react';
 
 export default function App() {
-  const [currentLocation, setCurrentLocation] = useState<Location>(DEFAULT_FAVORITES[0]);
+  const [currentLocation, setCurrentLocation] = useState<Location>(() => {
+    try {
+      const saved = localStorage.getItem('atmosphere_selected_location');
+      return saved ? JSON.parse(saved) : DEFAULT_FAVORITES[0];
+    } catch (e) {
+      return DEFAULT_FAVORITES[0];
+    }
+  });
   const [favorites, setFavorites] = useState<Location[]>(() => {
     try {
       const saved = localStorage.getItem('atmosphere_favorites');
@@ -20,6 +27,15 @@ export default function App() {
       return DEFAULT_FAVORITES;
     }
   });
+
+  const saveCurrentLocation = (loc: Location) => {
+    setCurrentLocation(loc);
+    try {
+      localStorage.setItem('atmosphere_selected_location', JSON.stringify(loc));
+    } catch (e) {
+      console.error('Failed to save selected location:', e);
+    }
+  };
 
   const [tempUnit, setTempUnit] = useState<TempUnit>('C');
   const [windUnit, setWindUnit] = useState<WindUnit>('kmh');
@@ -92,7 +108,7 @@ export default function App() {
           currentLocation.longitude.toFixed(2) === loc.longitude.toFixed(2))
       ) {
         if (updated.length > 0) {
-          setCurrentLocation(updated[0]);
+          saveCurrentLocation(updated[0]);
         }
       }
     } else {
@@ -136,7 +152,7 @@ export default function App() {
   }, [currentLocation, lang, fetchWeather]);
 
   const handleSelectLocation = (loc: Location) => {
-    setCurrentLocation(loc);
+    saveCurrentLocation(loc);
   };
 
   return (
