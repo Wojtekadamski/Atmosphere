@@ -3,6 +3,16 @@ import { DailyPoint, HourlyPoint, TempUnit, Language } from '../types';
 import { formatTemp } from '../utils/formatters';
 import { TRANSLATIONS, getWmoWeatherDescription } from '../constants/translations';
 import {
+  ResponsiveContainer,
+  ComposedChart,
+  Area,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from 'recharts';
+import {
   Calendar,
   ChevronDown,
   CloudRain,
@@ -167,28 +177,66 @@ export const DailyForecastCard: React.FC<DailyForecastCardProps> = ({
                     {t.hourlyDetails}
                   </div>
                   {hourlyForDay.length > 0 ? (
-                    <div className="grid grid-cols-[72px_1fr_84px_72px] gap-2 text-[11px] text-slate-500 dark:text-slate-400 font-semibold mb-3">
-                      <span>{t.hourLabel}</span>
-                      <span>{t.weatherLabel}</span>
-                      <span>{t.temperatureLabel}</span>
-                      <span>{t.rainProbLabel}</span>
+                    <div className="w-full h-40">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <ComposedChart data={hourlyForDay} margin={{ top: 8, right: 12, left: 0, bottom: 0 }}>
+                          <CartesianGrid stroke="rgba(148,163,184,0.15)" vertical={false} />
+                          <XAxis
+                            dataKey="displayTime"
+                            axisLine={false}
+                            tickLine={false}
+                            tick={{ fill: '#94a3b8', fontSize: 11 }}
+                            interval="preserveStartEnd"
+                            minTickGap={16}
+                          />
+                          <YAxis
+                            yAxisId="left"
+                            orientation="left"
+                            tick={{ fill: '#94a3b8', fontSize: 11 }}
+                            axisLine={false}
+                            tickLine={false}
+                            width={28}
+                          />
+                          <YAxis
+                            yAxisId="right"
+                            orientation="right"
+                            tick={{ fill: '#94a3b8', fontSize: 11 }}
+                            axisLine={false}
+                            tickLine={false}
+                            width={28}
+                          />
+                          <Tooltip
+                            wrapperStyle={{ borderRadius: 16, boxShadow: '0 10px 30px rgba(15,23,42,0.15)' }}
+                            contentStyle={{ background: '#0f172a', border: 'none', color: 'white', borderRadius: 16, padding: '12px 14px' }}
+                            labelStyle={{ color: '#cbd5e1', fontSize: 12 }}
+                            formatter={(value: any, name: string) => {
+                              if (name === 'averageTemp') return [`${formatTemp(value, tempUnit)}`, t.temperatureLabel];
+                              if (name === 'averageRainProb') return [`${value}%`, t.rainProbLabel];
+                              return [value, name];
+                            }}
+                          />
+                          <Area
+                            yAxisId="left"
+                            type="monotone"
+                            dataKey="averageTemp"
+                            stroke="#38bdf8"
+                            fill="rgba(56,189,248,0.18)"
+                            strokeWidth={2}
+                            dot={false}
+                          />
+                          <Bar
+                            yAxisId="right"
+                            dataKey="averageRainProb"
+                            fill="#22d3ee"
+                            barSize={12}
+                            radius={[6, 6, 0, 0]}
+                          />
+                        </ComposedChart>
+                      </ResponsiveContainer>
                     </div>
                   ) : (
                     <div className="text-xs text-slate-500 dark:text-slate-400">No hourly readings available</div>
                   )}
-                  <div className="space-y-2">
-                    {hourlyForDay.map((hour) => (
-                      <div
-                        key={hour.time}
-                        className="grid grid-cols-[72px_1fr_84px_72px] gap-2 items-center text-[13px] text-slate-700 dark:text-slate-200"
-                      >
-                        <span className="font-medium">{hour.displayTime}</span>
-                        <span>{hour.weatherDescription}</span>
-                        <span className="font-semibold">{formatTemp(hour.averageTemp, tempUnit)}</span>
-                        <span className="font-semibold text-cyan-500">{hour.averageRainProb}%</span>
-                      </div>
-                    ))}
-                  </div>
                 </div>
               )}
             </div>
