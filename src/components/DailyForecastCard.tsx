@@ -78,7 +78,13 @@ export const DailyForecastCard: React.FC<DailyForecastCardProps> = ({
       <div className="grid grid-cols-1 divide-y divide-slate-100 dark:divide-slate-800">
         {daily.map((day, idx) => {
           const weatherDesc = getWmoWeatherDescription(day.weatherCode, activeLang);
-          const hourlyForDay = hourly.filter((h) => h.time.startsWith(day.date));
+          const hourlyForDay = hourly
+            .filter((h) => h.time.startsWith(day.date))
+            .map((h) => ({
+              ...h,
+              averageRainProb: h.averageRainProb ?? 0,
+              averageRainAmount: h.averageRainAmount ?? 0,
+            }));
           const isExpanded = expandedDate === day.date;
           
           let dayDisplay = day.dayOfWeek;
