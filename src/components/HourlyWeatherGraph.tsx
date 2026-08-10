@@ -64,7 +64,7 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
   const filteredHourly = hourlyData.slice(normalizedStartIndex, normalizedStartIndex + timeRange);
 
   // Transform dataset for Recharts with converted units
-  const chartData = filteredHourly.map((item, index) => {
+  const chartData = filteredHourly.map((item) => {
     const weatherDescription = getWmoWeatherDescription(item.weatherCode, activeLang);
 
     const formattedItem: any = {
@@ -85,6 +85,9 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
       ],
       averageRainProb: item.averageRainProb,
       averageRainAmount: item.averageRainAmount,
+      rawWindSpeed: item.averageWindSpeed,
+      windDirection: item.averageWindDirection,
+      providers: item.providers,
     };
 
     return formattedItem;
@@ -99,7 +102,6 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
     setActiveProviders((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Custom Interactive Tooltip
   const CustomTooltip = ({ active, payload }: any) => {
     if (!active || !payload || !payload.length) return null;
     const dataPoint = payload[0]?.payload;
@@ -172,9 +174,10 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
                       />
                       <span className="font-semibold text-slate-300">{pInfo.shortName}</span>
                     </div>
-                    <div className="font-mono text-slate-200 flex items-center gap-1.5 text-[11px]">
+                    <div className="font-mono text-slate-200 flex items-center gap-2 text-[11px]">
                       <span className="font-bold">{convertedTemp}°{tempUnit}</span>
                       <span className="text-cyan-400">{pVal.rainProb}%</span>
+                      <span className="text-sky-300">{pVal.rainAmount} mm</span>
                       <span className="text-teal-400 flex items-center gap-0.5">
                         {formatWind(pVal.windSpeed, windUnit)}
                         <Navigation
@@ -494,13 +497,40 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
                 domain={[0, 100]}
               />
               <Tooltip content={<CustomTooltip />} />
+              <YAxis
+                yAxisId="left"
+                tick={{ fontSize: 11, fill: '#22d3ee', fontWeight: 600 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(val) => `${val} mm`}
+                domain={[0, 'dataMax + 2']}
+              />
+              <YAxis
+                yAxisId="right"
+                orientation="right"
+                tick={{ fontSize: 11, fill: '#0891b2' }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(val) => `${val}%`}
+                domain={[0, 100]}
+              />
               <Area
+                yAxisId="right"
                 type="monotone"
                 dataKey="averageRainProb"
                 name={t.legendRainfallProb}
                 stroke="#0891b2"
                 strokeWidth={2.5}
                 fill="url(#rainAreaGrad)"
+              />
+              <Line
+                yAxisId="left"
+                type="monotone"
+                dataKey="averageRainAmount"
+                name={t.avgRainAmount}
+                stroke="#22d3ee"
+                strokeWidth={2.5}
+                dot={false}
               />
             </AreaChart>
           ) : (

@@ -190,7 +190,7 @@ export const DailyForecastCard: React.FC<DailyForecastCardProps> = ({
                             minTickGap={16}
                           />
                           <YAxis
-                            yAxisId="left"
+                            yAxisId="temp"
                             orientation="left"
                             tick={{ fill: '#94a3b8', fontSize: 11 }}
                             axisLine={false}
@@ -198,12 +198,24 @@ export const DailyForecastCard: React.FC<DailyForecastCardProps> = ({
                             width={28}
                           />
                           <YAxis
-                            yAxisId="right"
+                            yAxisId="rainProb"
                             orientation="right"
                             tick={{ fill: '#94a3b8', fontSize: 11 }}
                             axisLine={false}
                             tickLine={false}
-                            width={28}
+                            width={34}
+                            tickFormatter={(val) => `${val}%`}
+                            domain={[0, 100]}
+                          />
+                          <YAxis
+                            yAxisId="rainAmt"
+                            orientation="right"
+                            tick={{ fill: '#67e8f9', fontSize: 11 }}
+                            axisLine={false}
+                            tickLine={false}
+                            width={40}
+                            tickFormatter={(val) => `${val} mm`}
+                            domain={[0, 'dataMax + 2']}
                           />
                           <Tooltip
                             wrapperStyle={{ borderRadius: 16, boxShadow: '0 10px 30px rgba(15,23,42,0.15)' }}
@@ -212,11 +224,12 @@ export const DailyForecastCard: React.FC<DailyForecastCardProps> = ({
                             formatter={(value: any, name: string) => {
                               if (name === 'averageTemp') return [`${formatTemp(value, tempUnit)}`, t.temperatureLabel];
                               if (name === 'averageRainProb') return [`${value}%`, t.rainProbLabel];
+                              if (name === 'averageRainAmount') return [`${value} mm`, t.rainAmountLabel];
                               return [value, name];
                             }}
                           />
                           <Area
-                            yAxisId="left"
+                            yAxisId="temp"
                             type="monotone"
                             dataKey="averageTemp"
                             stroke="#38bdf8"
@@ -225,11 +238,19 @@ export const DailyForecastCard: React.FC<DailyForecastCardProps> = ({
                             dot={false}
                           />
                           <Bar
-                            yAxisId="right"
+                            yAxisId="rainProb"
                             dataKey="averageRainProb"
                             fill="#22d3ee"
                             barSize={12}
                             radius={[6, 6, 0, 0]}
+                          />
+                          <Line
+                            yAxisId="rainAmt"
+                            type="monotone"
+                            dataKey="averageRainAmount"
+                            stroke="#22d3ee"
+                            strokeWidth={2}
+                            dot={false}
                           />
                         </ComposedChart>
                       </ResponsiveContainer>

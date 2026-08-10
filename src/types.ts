@@ -44,6 +44,7 @@ export interface HourlyPoint {
   minTemp: number;
   maxTemp: number;
   averageRainProb: number;
+  averageRainAmount: number;
   maxRainProb: number;
   averageWindSpeed: number;
   averageWindDirection: number;

@@ -107,6 +107,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const meteofrRain = getSeries('meteofrance_seamless', 'precipitation_probability');
     const baseRain = getBaseSeries('precipitation_probability');
 
+    const ecmwfRainAmount = getSeries('ecmwf_ifs025', 'precipitation');
+    const gfsRainAmount = getSeries('gfs_seamless', 'precipitation');
+    const ukmoRainAmount = getSeries('ukmo_seamless', 'precipitation');
+    const iconRainAmount = getSeries('icon_seamless', 'precipitation');
+    const gemRainAmount = getSeries('gem_seamless', 'precipitation');
+    const jmaRainAmount = getSeries('jma_seamless', 'precipitation');
+    const meteofrRainAmount = getSeries('meteofrance_seamless', 'precipitation');
+    const baseRainAmount = getBaseSeries('precipitation');
+
     const ecmwfHumidity = getSeries('ecmwf_ifs025', 'relative_humidity_2m');
     const gfsHumidity = getSeries('gfs_seamless', 'relative_humidity_2m');
     const ukmoHumidity = getSeries('ukmo_seamless', 'relative_humidity_2m');
@@ -172,6 +181,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const rMetNo = generateRainVariation(baseR, i + 7);
       const rMeteoFR = meteofrRain[i] !== undefined ? meteofrRain[i] : generateRainVariation(baseR, i + 8);
 
+      const raEcmwf = ecmwfRainAmount[i] !== undefined ? Math.round(ecmwfRainAmount[i] * 10) / 10 : Math.round((rEcmwf / 20) * 10) / 10;
+      const raGfs = gfsRainAmount[i] !== undefined ? Math.round(gfsRainAmount[i] * 10) / 10 : Math.round((rGfs / 20) * 10) / 10;
+      const raUkmo = ukmoRainAmount[i] !== undefined ? Math.round(ukmoRainAmount[i] * 10) / 10 : Math.round((rUkmo / 20) * 10) / 10;
+      const raIcon = iconRainAmount[i] !== undefined ? Math.round(iconRainAmount[i] * 10) / 10 : Math.round((rIcon / 20) * 10) / 10;
+      const raGem = gemRainAmount[i] !== undefined ? Math.round(gemRainAmount[i] * 10) / 10 : Math.round((rGem / 20) * 10) / 10;
+      const raJma = jmaRainAmount[i] !== undefined ? Math.round(jmaRainAmount[i] * 10) / 10 : Math.round((rJma / 20) * 10) / 10;
+      const raMetNo = meteofrRainAmount[i] !== undefined ? Math.round(meteofrRainAmount[i] * 10) / 10 : Math.round((rMetNo / 20) * 10) / 10;
+      const raMeteoFR = meteofrRainAmount[i] !== undefined ? Math.round(meteofrRainAmount[i] * 10) / 10 : Math.round((rMeteoFR / 20) * 10) / 10;
+
       const humEcmwf = ecmwfHumidity[i] !== undefined ? ecmwfHumidity[i] : generateHumidityVariation(baseHum, i + 1);
       const humGfs = gfsHumidity[i] !== undefined ? gfsHumidity[i] : generateHumidityVariation(baseHum, i + 2);
       const humUkmo = ukmoHumidity[i] !== undefined ? ukmoHumidity[i] : generateHumidityVariation(baseHum, i + 3);
@@ -212,7 +230,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const maxTemp = sortedTemps[sortedTemps.length - 1];
 
       const avgRain = Math.round(rains.reduce((a, b) => a + b, 0) / rains.length);
-      const averageRainAmount = Math.round(rains.reduce((a, b) => a + b, 0) / rains.length / 10 * 10) / 10;
+      const averageRainAmount = Math.round((raEcmwf + raGfs + raUkmo + raIcon + raGem + raJma + raMetNo + raMeteoFR) / 8 * 10) / 10;
       const maxRain = Math.max(...rains);
       const avgHum = Math.round(humidities.reduce((a, b) => a + b, 0) / humidities.length);
       const avgWindSpeed = Math.round((winds.reduce((a, b) => a + b, 0) / winds.length) * 10) / 10;
