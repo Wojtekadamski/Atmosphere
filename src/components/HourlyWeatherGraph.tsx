@@ -14,6 +14,7 @@ import {
 } from 'recharts';
 import {
   HourlyPoint,
+  ProviderHourData,
   ProviderId,
   TempUnit,
   WindUnit,
@@ -51,7 +52,10 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
   const [activeProviders, setActiveProviders] = useState<Record<ProviderId, boolean>>({
     ecmwf: true,
     gfs: true,
+    ukmo: true,
     icon: true,
+    gem: true,
+    jma: true,
     metno: true,
     meteofrance: true,
   });
@@ -59,12 +63,12 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
   // Start the graph from local time minus two hours, aligned to the next hourly boundary
   const twoHoursAgo = Date.now() - 2 * 60 * 60 * 1000;
   const nextHourBoundary = Math.ceil(twoHoursAgo / (60 * 60 * 1000)) * (60 * 60 * 1000);
-  const startIndex = hourlyData.findIndex((item) => new Date(item.time).getTime() >= nextHourBoundary);
+  const startIndex = hourlyData.findIndex((item: HourlyPoint) => new Date(item.time).getTime() >= nextHourBoundary);
   const normalizedStartIndex = startIndex === -1 ? 0 : startIndex;
   const filteredHourly = hourlyData.slice(normalizedStartIndex, normalizedStartIndex + timeRange);
 
   // Transform dataset for Recharts with converted units
-  const chartData = filteredHourly.map((item) => {
+  const chartData = filteredHourly.map((item: HourlyPoint) => {
     const weatherDescription = getWmoWeatherDescription(item.weatherCode, activeLang);
 
     const formattedItem: any = {
@@ -86,28 +90,34 @@ export const HourlyWeatherGraph: React.FC<HourlyWeatherGraphProps> = ({
       averageRainProb: item.averageRainProb,
       averageRainAmount: item.averageRainAmount,
       rawWindSpeed: item.averageWindSpeed,
+      windSpeed: formatWindNumber(item.averageWindSpeed, windUnit),
       windDirection: item.averageWindDirection,
       providers: item.providers,
     };
 
+    Object.entries(item.providers).forEach(([pid, providerData]) => {
+      const providerHour = providerData as ProviderHourData;
+      formattedItem[`temp_${pid}`] = formatTempNumber(providerHour.temp, tempUnit);
+    });
+
     return formattedItem;
   });
-
-  const formatXAxisTick = (rawTime: string) => {
-    const point = chartData.find((item) => item.rawTime === rawTime);
-    return point ? point.displayTime : rawTime;
-  };
 
   const toggleProvider = (id: ProviderId) => {
     setActiveProviders((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
-  const CustomTooltip = ({ active, payload }: any) => {
+  const formatXAxisTick = (rawTime: string) => {
+    const point = chartData.find((item: any) => item.rawTime === rawTime);
+    return point ? point.displayTime : rawTime;
+  };
+
+  const CustomTooltip = ({ active, payload }: { active?: boolean; payload?: any[] }) => {
     if (!active || !payload || !payload.length) return null;
     const dataPoint = payload[0]?.payload;
     if (!dataPoint) return null;
 
-    const hourData = dataPoint.providers ? dataPoint : hourlyData.find((h) => h.time === dataPoint.rawTime);
+    const hourData = dataPoint.providers ? dataPoint : hourlyData.find((h: HourlyPoint) => h.time === dataPoint.rawTime);
 
     return (
       <div className="bg-slate-900/95 text-white p-4 rounded-2xl shadow-2xl border border-slate-700/80 backdrop-blur-md max-w-sm z-50 text-xs space-y-3">
